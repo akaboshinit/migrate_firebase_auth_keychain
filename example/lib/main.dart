@@ -23,6 +23,9 @@ Future<void> main() async {
     onBackupCompleted: (authData) {
       print('onCompletedBackup:${authData.lengthInBytes}');
     },
+    onBackupFailed: (error) {
+      print('onBackupFailed:$error');
+    },
   );
 
   runApp(const MainApp());
@@ -55,27 +58,35 @@ class MainPage extends StatelessWidget {
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Text('User is signed in! ${snapshot.data!.uid}');
+                  return Column(
+                    children: [
+                      Text('User is signed in! ${snapshot.data!.uid}'),
+                      TextButton(
+                          onPressed: () async {
+                            FirebaseAuth.instance.currentUser!.reload();
+                          },
+                          child: const Text('Reload User')),
+                      TextButton(
+                          onPressed: () {
+                            FirebaseAuth.instance.signOut();
+                          },
+                          child: const Text('Sign Out')),
+                    ],
+                  );
                 } else {
-                  return const Text('User is not signed in!');
+                  return Column(
+                    children: [
+                      const Text('User is not signed in!'),
+                      TextButton(
+                          onPressed: () {
+                            FirebaseAuth.instance.signInAnonymously();
+                          },
+                          child: const Text('Sign In Anonymously')),
+                    ],
+                  );
                 }
               },
             ),
-            TextButton(
-                onPressed: () {
-                  FirebaseAuth.instance.signInAnonymously();
-                },
-                child: const Text('Sign In Anonymously')),
-            TextButton(
-                onPressed: () {
-                  FirebaseAuth.instance.signOut();
-                },
-                child: const Text('Sign Out')),
-            TextButton(
-                onPressed: () async {
-                  FirebaseAuth.instance.currentUser!.reload();
-                },
-                child: const Text('Reload User')),
             TextButton(
                 onPressed: () async {
                   final firebaseAuthData =
