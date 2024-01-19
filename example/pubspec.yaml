@@ -3,10 +3,15 @@ description: Demonstrates how to use the migrate_firebase_auth_keychain plugin.
 publish_to: 'none'
 version: 0.1.0
 
+platforms:
+  ios: true
+
 environment:
   sdk: '>=3.1.5 <4.0.0'
 
 dependencies:
+  firebase_auth: ^4.16.0
+  firebase_core: ^2.24.2
   flutter:
     sdk: flutter
   migrate_firebase_auth_keychain:

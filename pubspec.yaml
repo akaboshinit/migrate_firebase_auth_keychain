@@ -2,14 +2,20 @@ name: migrate_firebase_auth_keychain
 description: A new Flutter plugin project.
 version: 0.0.1
 
+platforms:
+  ios: true
+
 environment:
   sdk: '>=3.1.5 <4.0.0'
   flutter: '>=3.3.0'
 
 dependencies:
+  firebase_auth: ^4.16.0
+  firebase_core: ^2.24.2
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
