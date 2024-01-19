@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  migrate_firebase_auth_keychain:
+    path: ../
 
 dev_dependencies:
   flutter_test:

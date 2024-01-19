@@ -8,12 +8,12 @@
 
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
+// import 'package:integration_test/integration_test.dart';
 
 import 'package:migrate_firebase_auth_keychain/migrate_firebase_auth_keychain.dart';
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  // IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('getPlatformVersion test', (WidgetTester tester) async {
     final MigrateFirebaseAuthKeychain plugin = MigrateFirebaseAuthKeychain();
