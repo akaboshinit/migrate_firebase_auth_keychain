@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +14,12 @@ class MigrateFirebaseAuth {
     void Function(Uint8List authData)? onRestoreCompleted,
     void Function(Exception error)? onRestoreFailed,
   }) async {
+    if (!Platform.isIOS) {
+      print('iOS only supported');
+      onRestoreFailed?.call(Exception("iOS only supported"));
+      return;
+    }
+
     ({String authKey, String backupAuthKey, String serviceName}) keychainName;
     try {
       keychainName = await _getKeychainName();
@@ -40,10 +48,16 @@ class MigrateFirebaseAuth {
 
   Future<void> backupFirebaseAuthData({
     void Function(Uint8List authData)? onBackupCompleted,
-    void Function(String message)? onBackupFailed,
+    void Function(Exception message)? onBackupFailed,
   }) async {
+    if (!Platform.isIOS) {
+      print('iOS only supported');
+      onBackupFailed?.call(Exception("iOS only supported"));
+      return;
+    }
+
     if (FirebaseAuth.instance.currentUser == null) {
-      onBackupFailed?.call("currentUser is null");
+      onBackupFailed?.call(Exception("currentUser is null"));
       return;
     }
 
@@ -61,7 +75,7 @@ class MigrateFirebaseAuth {
       keychainKey: keychainName.authKey,
     );
     if (authData == null) {
-      onBackupFailed?.call("keychain authData is null");
+      onBackupFailed?.call(Exception("keychain authData is null"));
       return;
     }
 
@@ -76,6 +90,10 @@ class MigrateFirebaseAuth {
   }
 
   Future<Uint8List> restoreFirebaseAuthData() async {
+    if (!Platform.isIOS) {
+      throw Exception('iOS only supported');
+    }
+
     final keychainName = await _getKeychainName();
 
     final spFirebaseAuthData =
@@ -95,6 +113,9 @@ class MigrateFirebaseAuth {
   }
 
   Future<void> deleteKeychainFirebaseAuthData() async {
+    if (!Platform.isIOS) {
+      throw Exception('iOS only supported');
+    }
     final keychainName = await _getKeychainName();
 
     await _keyChainPlugin.deleteKeychain(
@@ -104,6 +125,9 @@ class MigrateFirebaseAuth {
   }
 
   Future<void> deleteBackupAuthData() async {
+    if (!Platform.isIOS) {
+      throw Exception('iOS only supported');
+    }
     final keychainName = await _getKeychainName();
     await _keyChainPlugin.deleteKeychain(
       serviceName: keychainName.serviceName,
@@ -116,6 +140,9 @@ class MigrateFirebaseAuth {
   }
 
   Future<Map<String, dynamic>> checkFirebaseAuthDataExists() async {
+    if (!Platform.isIOS) {
+      throw Exception('iOS only supported');
+    }
     final keychainName = await _getKeychainName();
 
     final authData = await _keyChainPlugin.getKeychain(
@@ -146,6 +173,9 @@ class MigrateFirebaseAuth {
 
   Future<({String serviceName, String authKey, String backupAuthKey})>
       _getKeychainName() async {
+    if (!Platform.isIOS) {
+      throw Exception('iOS only supported');
+    }
     const authKey = 'firebase_auth_1___FIRAPP_DEFAULT_firebase_user';
     const backupAuthKey = 'firebase_migrate_backup_auth_data';
 
@@ -172,25 +202,6 @@ class MigrateFirebaseAuth {
       );
     }
   }
-
-  // Future<bool> isEqualUnit8List(
-  //   Uint8List list1,
-  //   Uint8List list2,
-  // ) async {
-  //   if (identical(list1, list2)) {
-  //     return true;
-  //   }
-  //   final length = list1.length;
-  //   if (length != list2.length) {
-  //     return false;
-  //   }
-  //   for (var i = 0; i < length; i++) {
-  //     if (!(list1[i] == list2[i])) {
-  //       return false;
-  //     }
-  //   }
-  //   return true;
-  // }
 }
 
 class _FirebaseAuthBackupAndMigrateSharedPreferences {
